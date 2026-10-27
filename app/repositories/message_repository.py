@@ -13,6 +13,10 @@ class MessageRepository(ABC):
     def get_by_id(self, message_id: str) -> Message | None:
         ...
 
+    @abstractmethod
+    def get_by_external_id(self, external_id: str) -> Message | None:
+        ...
+
 
 class InMemoryMessageRepository(MessageRepository):
     """Implementación simple: guarda en un diccionario. Ideal para empezar y para tests."""
@@ -25,3 +29,6 @@ class InMemoryMessageRepository(MessageRepository):
 
     def get_by_id(self, message_id: str) -> Message | None:
         return self._messages.get(message_id)
+
+    def get_by_external_id(self, external_id: str) -> Message | None:
+        return next((m for m in self._messages.values() if m.external_id == external_id), None)

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from agents import Agent, FileSearchTool, Runner
+from agents import Agent, FileSearchTool, OpenAIConversationsSession, Runner
+from openai import AsyncOpenAI
 
 INSTRUCTIONS = """Eres el asistente de atención al cliente.
 Responde de forma breve y amable, en el idioma del cliente.
@@ -8,17 +9,22 @@ Usa solo la información de los documentos. Si no la encuentras, dilo y ofrece h
 
 
 class AIResponder(ABC):
-    """Contrato: dado el texto del cliente, devolver una respuesta."""
+    """Contrato: abrir una conversación con la IA y responder dentro de ella (con memoria de lo anterior)."""
 
     @abstractmethod
-    async def reply(self, text: str) -> str:
+    async def start_conversation(self) -> str:
+        ...
+
+    @abstractmethod
+    async def reply(self, ai_conversation_id: str, text: str) -> str:
         ...
 
 
 class OpenAIAgentResponder(AIResponder):
-    """Implementación con el Agents SDK de OpenAI y búsqueda en el vector store."""
+    """Implementación con el Agents SDK de OpenAI, búsqueda en el vector store y la Conversations API como memoria."""
 
-    def __init__(self, vector_store_id: str, model: str):
+    def __init__(self, client: AsyncOpenAI, vector_store_id: str, model: str):
+        self.client = client
         # El Agent es configuración: se crea una vez y se reutiliza en cada mensaje
         self.agent = Agent(
             name="Atención al cliente",
@@ -27,6 +33,13 @@ class OpenAIAgentResponder(AIResponder):
             tools=[FileSearchTool(vector_store_ids=[vector_store_id], max_num_results=3)],
         )
 
-    async def reply(self, text: str) -> str:
-        result = await Runner.run(self.agent, text)
+    async def start_conversation(self) -> str:
+        # La creamos nosotros (y no la sesión) porque necesitamos su id para guardarlo en nuestra Conversation
+        conversation = await self.client.conversations.create()
+        return conversation.id
+
+    async def reply(self, ai_conversation_id: str, text: str) -> str:
+        # La sesión lee el historial de esa conversación en OpenAI y le añade el turno nuevo
+        session = OpenAIConversationsSession(conversation_id=ai_conversation_id, openai_client=self.client)
+        result = await Runner.run(self.agent, text, session=session)
         return result.final_output

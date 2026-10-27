@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     # Con valor por defecto: no es secreto y hay una opción razonable; el .env puede sobrescribirlo
     agent_model: str = "gpt-4o-mini"
     log_level: str = "INFO"
+    conversation_timeout_minutes: int = 120
 
 
 settings = Settings()

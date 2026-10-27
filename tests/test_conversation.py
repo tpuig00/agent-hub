@@ -2,21 +2,14 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from app.domain.conversation import Conversation, ConversationStatus
-from app.domain.message import Channel
+from app.domain.conversation import Channel, Conversation, ConversationStatus
 
 START = datetime(2026, 10, 27, 12, 0, tzinfo=UTC)
 TIMEOUT = timedelta(hours=2)
 
 
 def make_conversation() -> Conversation:
-    return Conversation(
-        id="conv-1",
-        channel=Channel.WHATSAPP,
-        customer_id="ES.13491208655302741918",
-        ai_conversation_id="conv_abc",
-        last_activity_at=START,
-    )
+    return Conversation.start(Channel.WHATSAPP, "ES.13491208655302741918", "conv_abc", START)
 
 
 def test_new_conversation_is_open():
