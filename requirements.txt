@@ -4,3 +4,5 @@ pytest
 openai
 pydantic-settings
 openai-agents
+sqlalchemy
+psycopg[binary]

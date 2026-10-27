@@ -3,36 +3,38 @@
   "object": "whatsapp_business_account",
   "entry": [
     {
-      "id": "123456789012345",
+      "id": "123456789",
       "changes": [
         {
+          "field": "messages",
           "value": {
             "messaging_product": "whatsapp",
             "metadata": {
               "display_phone_number": "34930000000",
-              "phone_number_id": "987654321012345"
+              "phone_number_id": "987654321"
             },
             "contacts": [
               {
                 "profile": {
                   "name": "Juan García"
                 },
-                "wa_id": "34600111222"
+                "wa_id": "34600111222",
+                "user_id": "ES.13491208655302741918"
               }
             ],
             "messages": [
               {
                 "from": "34600111222",
-                "id": "wamid.HBgLMzQ2MDAxMTEyMjIVAgAS",
+                "from_user_id": "ES.13491208655302741918",
+                "id": "wamid.ABC123",
                 "timestamp": "1793100000",
                 "type": "text",
                 "text": {
-                  "body": "Hola, quiero información sobre vuestros servicios"
+                  "body": "Hola, necesito ayuda"
                 }
               }
             ]
-          },
-          "field": "messages"
+          }
         }
       ]
     }

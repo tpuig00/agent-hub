@@ -4,3 +4,23 @@ services:
     ports:
       - "8000:8000"
     env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://agent_hub:agent_hub@db:5432/agent_hub
+    depends_on:
+      - db
+
+  db:
+    # Misma versión mayor que usaremos en Neon, para no tener sorpresas entre local y producción
+    image: postgres:17
+    environment:
+      POSTGRES_USER: agent_hub
+      POSTGRES_PASSWORD: agent_hub
+      POSTGRES_DB: agent_hub
+    ports:
+      - "5432:5432"
+    volumes:
+      # Volumen con nombre: los datos sobreviven a "docker compose down" (no a "down -v")
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

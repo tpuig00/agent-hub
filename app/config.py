@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     # Sin valor por defecto: si falta en el entorno, la app no arranca
     openai_api_key: str
     openai_vector_store_id: str
+    database_url: str
 
     # Con valor por defecto: no es secreto y hay una opción razonable; el .env puede sobrescribirlo
     agent_model: str = "gpt-4o-mini"
