@@ -22,6 +22,7 @@ class MessageResponse(BaseModel):
     sender: str
     content: str
     status: MessageStatus
+    reply: str | None = None
 
     @classmethod
     def from_domain(cls, message: Message) -> "MessageResponse":
@@ -31,15 +32,16 @@ class MessageResponse(BaseModel):
             sender=message.sender,
             content=message.content,
             status=message.status,
+            reply=message.reply
         )
 
 
 @router.post("", response_model=MessageResponse, status_code=201)
-def receive_message(
+async def receive_message(
     body: ReceiveMessageRequest,
     service: MessageService = Depends(get_message_service),
 ):
-    message = service.receive(body.id, body.channel, body.sender, body.content)
+    message = await service.receive(body.id, body.channel, body.sender, body.content)
     return MessageResponse.from_domain(message)
 
 

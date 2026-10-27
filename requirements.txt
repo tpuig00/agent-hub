@@ -1,3 +1,6 @@
 fastapi
 uvicorn[standard]
 pytest
+openai
+pydantic-settings
+openai-agents

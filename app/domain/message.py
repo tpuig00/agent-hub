@@ -17,9 +17,15 @@ class Message:
     sender: str
     content: str
     status: MessageStatus = MessageStatus.RECEIVED
+    reply: str | None = None
 
-    def mark_as_answered(self):
+    def mark_as_answered(self, reply: str):
         if self.status == MessageStatus.ANSWERED:
             raise ValueError("Message is already marked as answered.")
 
+            
+        self.reply = reply
         self.status = MessageStatus.ANSWERED
+
+
+
